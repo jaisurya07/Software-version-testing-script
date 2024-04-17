@@ -1,8 +1,11 @@
 # Software-version-testing-script
-#To check Software version 
-This script will check the software version that we mention inside the script like ‘*Software name*’ and displays the output with the version number and export the result as a text file.
+$file=Start-Transcript;
+$FileName=$file -replace('Transcript started, output file is ','');
+$SearchSoftware = {Get-WmiObject Win32_Product | Where Name -ilike '*.NET*' |Format-Table Name,version,installdate};;
+$hostnames = gc hostnames.txt; ;write-host "`n`n Checking the given software product on the hosts..." -foregroundcolor cyan;;
+foreach($computer in $hostnames){write-host "`n #### $computer : #### `n" -foregroundcolor yellow;
+invoke-command -computername $computer -scriptblock $SearchSoftware;
+write-host "`n ---------------------------------------------------- `n" -foregroundcolor yellow;};Stop-Transcript;
+write-host "`n Opening the Output file...`n" -foregroundcolor cyan;sleep 2;
+invoke-item $FileName;
 
-For that we must create a text document as “hostnames.txt” in that we can add the list of servers and save it in a separate folder where we want to run the script.
-
-Note:-
-Add the list of servers in “hostname.txt” and Change the name of software as shown in the control panel and finally you get the output on the same path.
